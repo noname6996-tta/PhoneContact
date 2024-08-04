@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">PhonebookApplication</string>
+    <string name="add_contact">Add Contact</string>
+    <string name="done">Done</string>
+    <string name="back">Back</string>
+    <string name="import_small_data">Import Small Data</string>
+    <string name="import_medium_data">Import Medium Data</string>
+    <string name="import_big_data">Import Big Data</string>
+    <string name="delete_all_data">Delete All Data</string>
+    <string name="number_of_phone_numbers">Number of phone numbers</string>
+    <string name="more_options">more options</string>
+    <string name="phone">Phone</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="please_enter_complete_information">Please enter complete information</string>
+    <string name="add_success">Add success.</string>
+    <string name="ok">OK</string>
+    <string name="import_from_file_system">Import from file system</string>
+</resources>
