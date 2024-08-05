@@ -9,8 +9,8 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.distinctUntilChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -48,6 +48,11 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding>() {
                 .addToBackStack(null)
                 .commit()
         }
+        contactAdapter.deleteItem {
+            showError("Delete", "Do you want delete this item") {
+                viewModel.deleteContact(list[it].id!!)
+            }
+        }
     }
 
     override fun initView() {
@@ -76,28 +81,50 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding>() {
 
     override fun addObservers() {
         super.addObservers()
-        viewModel.getListContactsResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is State.Loading -> {
-                    startLoading()
-                    binding.rcvContact.isVisible = false
-                }
+        viewModel.getListContactsResult.distinctUntilChanged()
+            .observe(viewLifecycleOwner) { result ->
+                getListContactResult(result)
+            }
 
-                is State.Success<List<Contact>> -> {
-                    finishLoading()
-                    list.clear()
-                    list.addAll(result.data)
-                    contactAdapter.setListContact(list, requireContext())
-                    binding.tvNumberContacts.text =
-                        "${getString(R.string.number_of_phone_numbers)} : ${contactAdapter.itemCount}"
-                    binding.rcvContact.isVisible = true
-                }
+        viewModel.getErrorResult.distinctUntilChanged().observe(viewLifecycleOwner) {
+            getErrorResult(it)
+        }
+    }
 
-                is State.Failure -> {
-                    finishLoading()
-                    binding.rcvContact.isVisible = true
-                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
+    private fun getErrorResult(result: State<String>) {
+        when (result) {
+            is State.Success -> {
+                if (result.hasBeenHandled) {
+                    return
                 }
+                result.hasBeenHandled = true
+                showError("Insert", result.data) {}
+            }
+
+            is State.Failure -> {}
+            State.Loading -> {}
+        }
+    }
+
+    private fun getListContactResult(result: State<List<Contact>>) {
+        when (result) {
+            is State.Loading -> {
+                startLoading()
+            }
+
+            is State.Success -> {
+                finishLoading()
+                list.clear()
+                list.addAll(result.data)
+                contactAdapter.setListContact(list, requireContext())
+                binding.tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+                binding.tvNumberContacts.text =
+                    "${getString(R.string.number_of_phone_numbers)} : ${contactAdapter.itemCount}"
+            }
+
+            is State.Failure -> {
+                finishLoading()
+                Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -154,18 +181,19 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding>() {
 
             viewModel.insertListData(contacts)
         } catch (e: JsonSyntaxException) {
-            showError("File không đúng định dạng JSON Danh bạ")
+            showError("Error", "File không đúng định dạng JSON Danh bạ") {}
         } catch (e: Exception) {
-            showError("Đã xảy ra lỗi khi xử lý file")
+            showError("Error", "Đã xảy ra lỗi khi xử lý file") {}
         }
     }
 
-    private fun showError(message: String) {
+    private fun showError(tittle: String, message: String, onOkClick: () -> Unit) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Error")
+            .setTitle(tittle)
             .setMessage(message)
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
+                onOkClick()
             }
             .show()
     }

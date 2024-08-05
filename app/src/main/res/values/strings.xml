@@ -16,4 +16,5 @@
     <string name="add_success">Add success.</string>
     <string name="ok">OK</string>
     <string name="import_from_file_system">Import from file system</string>
+    <string name="empty_contacts">Empty Contacts</string>
 </resources>

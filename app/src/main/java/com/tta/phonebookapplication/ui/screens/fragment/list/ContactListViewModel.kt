@@ -22,8 +22,10 @@ class ContactListViewModel @Inject constructor(
     private val repository: ContactRepository
 ) : ViewModel() {
     private val listContacts = MutableLiveData<State<List<Contact>>>()
+    private val error = MutableLiveData<State<String>>()
 
     val getListContactsResult: LiveData<State<List<Contact>>> = listContacts
+    val getErrorResult: LiveData<State<String>> = error
 
     fun getListContacts(): Job = viewModelScope.launch {
         listContacts.postValue(State.Loading)
@@ -46,6 +48,7 @@ class ContactListViewModel @Inject constructor(
 
     fun importContactsFromJson(context: Context, fileName: Int): Job = viewModelScope.launch {
         listContacts.postValue(State.Loading)
+        var count = 0
         runCatching {
             withContext(Dispatchers.IO) {
                 val userList: JSONArray =
@@ -56,20 +59,26 @@ class ContactListViewModel @Inject constructor(
                 userList.takeIf { it.length() > 0 }?.let { list ->
                     for (index in 0 until list.length()) {
                         val userObj = list.getJSONObject(index)
-                        repository.insertContact(
-                            Contact(
-                                null,
-                                name = userObj.getString("name"),
-                                email = userObj.getString("email"),
-                                phone = userObj.getString("phone")
-                            )
+                        val contact = Contact(
+                            null,
+                            name = userObj.getString("name"),
+                            email = userObj.getString("email"),
+                            phone = userObj.getString("phone")
                         )
-
+                        if (repository.doesContactExist(contact.email, contact.phone) == 0) {
+                            repository.insertContact(
+                                contact
+                            )
+                        } else {
+                            count ++
+                        }
                     }
                 }
             }
         }.onSuccess {
             getListContacts()
+            error.postValue(State.Success("Not insert $count duplicate item"))
+            Timber.tag("error").e("delete $count duplicate item")
         }.onFailure { throwable ->
             Timber.tag("error").e(throwable.message.toString())
         }
@@ -93,9 +102,37 @@ class ContactListViewModel @Inject constructor(
 
     fun insertListData(list: List<Contact>): Job = viewModelScope.launch {
         listContacts.postValue(State.Loading)
+        var count = 0
         runCatching {
             withContext(Dispatchers.IO) {
-                repository.insertListContact(list)
+
+                for (contact in list) {
+                    if (repository.doesContactExist(contact.email, contact.phone) == 0) {
+                        repository.insertContact(
+                            contact
+                        )
+                    } else {
+                        count ++
+                    }
+                }
+//                repository.insertListContact(list)
+            }
+        }
+            .onSuccess {
+                getListContacts()
+                error.postValue(State.Success("Not insert $count duplicate item"))
+                Timber.tag("error").e("delete $count duplicate item")
+            }
+            .onFailure { throwable ->
+                Timber.tag("error_insert").e(throwable.message.toString())
+            }
+    }
+
+    fun deleteContact(id: Int): Job = viewModelScope.launch {
+        listContacts.postValue(State.Loading)
+        runCatching {
+            withContext(Dispatchers.IO) {
+                repository.deleteContactById(id)
             }
         }
             .onSuccess {

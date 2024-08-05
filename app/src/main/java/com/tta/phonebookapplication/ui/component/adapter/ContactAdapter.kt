@@ -58,11 +58,12 @@ class ContactAdapter :
             }
         }
 
-//        holder.binding.itemContact.setOnClickListener {
-//            onClickDeleteData?.let {
-//                it(position)
-//            }
-//        }
+        holder.binding.itemContact.setOnLongClickListener {
+            onClickDeleteData?.let {
+                it(position)
+            }
+            true
+        }
     }
 
     override fun getItemCount(): Int {
