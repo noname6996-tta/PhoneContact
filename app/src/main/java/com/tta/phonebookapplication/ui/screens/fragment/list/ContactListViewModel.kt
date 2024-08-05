@@ -77,7 +77,9 @@ class ContactListViewModel @Inject constructor(
             }
         }.onSuccess {
             getListContacts()
-            error.postValue(State.Success("Not insert $count duplicate item"))
+            if (count >0){
+                error.postValue(State.Success("Not insert $count duplicate item"))
+            }
             Timber.tag("error").e("delete $count duplicate item")
         }.onFailure { throwable ->
             Timber.tag("error").e(throwable.message.toString())
@@ -120,7 +122,9 @@ class ContactListViewModel @Inject constructor(
         }
             .onSuccess {
                 getListContacts()
-                error.postValue(State.Success("Not insert $count duplicate item"))
+                if (count > 0){
+                    error.postValue(State.Success("Not insert $count duplicate item"))
+                }
                 Timber.tag("error").e("delete $count duplicate item")
             }
             .onFailure { throwable ->
