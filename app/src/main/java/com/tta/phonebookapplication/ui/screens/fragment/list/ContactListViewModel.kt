@@ -65,6 +65,7 @@ class ContactListViewModel @Inject constructor(
                             email = userObj.getString("email"),
                             phone = userObj.getString("phone")
                         )
+//                      Remove duplicate contacts from new data when adding to db
                         if (repository.doesContactExist(contact.email, contact.phone) == 0) {
                             repository.insertContact(
                                 contact
@@ -107,7 +108,7 @@ class ContactListViewModel @Inject constructor(
         var count = 0
         runCatching {
             withContext(Dispatchers.IO) {
-
+//              Remove duplicate contacts from new data when adding to db
                 for (contact in list) {
                     if (repository.doesContactExist(contact.email, contact.phone) == 0) {
                         repository.insertContact(
@@ -117,7 +118,8 @@ class ContactListViewModel @Inject constructor(
                         count ++
                     }
                 }
-//                repository.insertListContact(list)
+//              just add
+//              repository.insertListContact(list)
             }
         }
             .onSuccess {
