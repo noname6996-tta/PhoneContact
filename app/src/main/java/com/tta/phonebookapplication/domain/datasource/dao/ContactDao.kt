@@ -1,26 +1,26 @@
-package com.tta.phonebookapplication.data.datasource.dao
+package com.tta.phonebookapplication.domain.datasource.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.tta.phonebookapplication.utils.TABLE_NAME
-import com.tta.phonebookapplication.data.datasource.base.BaseDao
-import com.tta.phonebookapplication.data.model.Contact
+import com.tta.phonebookapplication.domain.datasource.base.BaseDao
+import com.tta.phonebookapplication.domain.entity.ContactEntity
 
 @Dao
-interface ContactDao : BaseDao<Contact> {
+interface ContactDao : BaseDao<ContactEntity> {
     @Query("SELECT * FROM $TABLE_NAME")
-    suspend fun getAllContacts(): List<Contact>
+    suspend fun getAllContacts(): List<ContactEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(contacts: List<Contact>)
+    suspend fun insertAll(contactEntities: List<ContactEntity>)
 
     @Query("DELETE FROM $TABLE_NAME WHERE id = :id")
     suspend fun deleteContactByID(id: Int)
 
     @Query("SELECT * FROM $TABLE_NAME WHERE id = :id")
-    suspend fun getContactByID(id: Int): Contact
+    suspend fun getContactByID(id: Int): ContactEntity
 
     @Query("DELETE FROM $TABLE_NAME ")
     suspend fun deleteAllContactCodes()

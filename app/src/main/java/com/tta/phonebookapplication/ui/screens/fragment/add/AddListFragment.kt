@@ -6,7 +6,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
 import com.tta.phonebookapplication.R
-import com.tta.phonebookapplication.data.model.Contact
+import com.tta.phonebookapplication.domain.entity.ContactEntity
 import com.tta.phonebookapplication.databinding.FragmentAddContactBinding
 import com.tta.phonebookapplication.ui.screens.base.BaseFragment
 import com.tta.phonebookapplication.utils.State
@@ -38,8 +38,8 @@ class AddListFragment : BaseFragment<FragmentAddContactBinding>() {
                 val email = edtEmail.text.trim().toString()
                 val phone = edtPhone.text.trim().toString()
 
-                val contact = Contact(id = null, name = name, email = email, phone = phone)
-                viewModel.addContact(contact)
+                val contactEntity = ContactEntity(id = null, name = name, email = email, phone = phone)
+                viewModel.addContact(contactEntity)
             }
         }
     }

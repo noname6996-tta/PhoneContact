@@ -16,7 +16,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.tta.phonebookapplication.R
-import com.tta.phonebookapplication.data.model.Contact
+import com.tta.phonebookapplication.domain.entity.ContactEntity
 import com.tta.phonebookapplication.databinding.FragmentContactListBinding
 import com.tta.phonebookapplication.ui.component.adapter.ContactAdapter
 import com.tta.phonebookapplication.ui.screens.base.BaseFragment
@@ -30,7 +30,7 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding>() {
     override var isBackKeyActive: Boolean = false
     private val viewModel: ContactListViewModel by viewModels()
     private var contactAdapter = ContactAdapter()
-    private var list = ArrayList<Contact>()
+    private var list = ArrayList<ContactEntity>()
     private lateinit var pickJsonFileLauncher: ActivityResultLauncher<Intent>
 
     override fun getDataBinding(): FragmentContactListBinding {
@@ -106,7 +106,7 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding>() {
         }
     }
 
-    private fun getListContactResult(result: State<List<Contact>>) {
+    private fun getListContactResult(result: State<List<ContactEntity>>) {
         when (result) {
             is State.Loading -> {
                 startLoading()
@@ -176,10 +176,10 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding>() {
         try {
             val inputStream = requireContext().contentResolver.openInputStream(uri)
             val reader = InputStreamReader(inputStream)
-            val contactListType = object : TypeToken<List<Contact>>() {}.type
-            val contacts: List<Contact> = Gson().fromJson(reader, contactListType)
+            val contactEntityListType = object : TypeToken<List<ContactEntity>>() {}.type
+            val contactEntities: List<ContactEntity> = Gson().fromJson(reader, contactEntityListType)
 
-            viewModel.insertListData(contacts)
+            viewModel.insertListData(contactEntities)
         } catch (e: JsonSyntaxException) {
             showError("Error", "File không đúng định dạng JSON Danh bạ") {}
         } catch (e: Exception) {

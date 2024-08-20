@@ -81,4 +81,9 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     // Gson
     implementation (libs.gson)
+
+    // network
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.moshi)
+    implementation(libs.okhttp.interceptor)
 }

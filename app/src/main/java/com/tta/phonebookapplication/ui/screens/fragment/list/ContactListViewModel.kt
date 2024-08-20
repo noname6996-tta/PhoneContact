@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tta.phonebookapplication.data.model.Contact
-import com.tta.phonebookapplication.data.repository.ContactRepository
+import com.tta.phonebookapplication.domain.entity.ContactEntity
+import com.tta.phonebookapplication.domain.repository.ContactRepository
 import com.tta.phonebookapplication.utils.State
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,10 +21,10 @@ import javax.inject.Inject
 class ContactListViewModel @Inject constructor(
     private val repository: ContactRepository
 ) : ViewModel() {
-    private val listContacts = MutableLiveData<State<List<Contact>>>()
+    private val listContacts = MutableLiveData<State<List<ContactEntity>>>()
     private val error = MutableLiveData<State<String>>()
 
-    val getListContactsResult: LiveData<State<List<Contact>>> = listContacts
+    val getListContactsResult: LiveData<State<List<ContactEntity>>> = listContacts
     val getErrorResult: LiveData<State<String>> = error
 
     fun getListContacts(): Job = viewModelScope.launch {
@@ -59,16 +59,16 @@ class ContactListViewModel @Inject constructor(
                 userList.takeIf { it.length() > 0 }?.let { list ->
                     for (index in 0 until list.length()) {
                         val userObj = list.getJSONObject(index)
-                        val contact = Contact(
+                        val contactEntity = ContactEntity(
                             null,
                             name = userObj.getString("name"),
                             email = userObj.getString("email"),
                             phone = userObj.getString("phone")
                         )
 //                      Remove duplicate contacts from new data when adding to db
-                        if (repository.doesContactExist(contact.email, contact.phone) == 0) {
+                        if (repository.doesContactExist(contactEntity.email, contactEntity.phone) == 0) {
                             repository.insertContact(
-                                contact
+                                contactEntity
                             )
                         } else {
                             count ++
@@ -103,7 +103,7 @@ class ContactListViewModel @Inject constructor(
             }
     }
 
-    fun insertListData(list: List<Contact>): Job = viewModelScope.launch {
+    fun insertListData(list: List<ContactEntity>): Job = viewModelScope.launch {
         listContacts.postValue(State.Loading)
         var count = 0
         runCatching {

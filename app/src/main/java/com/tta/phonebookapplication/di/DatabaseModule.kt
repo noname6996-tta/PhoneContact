@@ -1,10 +1,11 @@
 package com.tta.phonebookapplication.di
 
 import android.content.Context
-import com.tta.phonebookapplication.data.datasource.dao.ContactDao
-import com.tta.phonebookapplication.data.datasource.db.AppDatabase
-import com.tta.phonebookapplication.data.repository.ContactRepository
-import com.tta.phonebookapplication.data.repository.ContactRepositoryImpl
+import com.tta.phonebookapplication.domain.datasource.dao.ContactDao
+import com.tta.phonebookapplication.domain.datasource.db.AppDatabase
+import com.tta.phonebookapplication.domain.repository.ContactRepository
+import com.tta.phonebookapplication.domain.repository.ContactRepositoryImpl
+import com.tta.phonebookapplication.network.service.ApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +15,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object DatabaseModule {
 
     @Provides
     @Singleton
@@ -30,7 +31,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideRepository(
-        dao: ContactDao
+        dao: ContactDao,
+        apiClient: ApiClient
     ) : ContactRepository {
         return ContactRepositoryImpl(dao)
     }

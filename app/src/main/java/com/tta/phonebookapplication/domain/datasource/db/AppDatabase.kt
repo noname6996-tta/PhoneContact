@@ -1,15 +1,15 @@
-package com.tta.phonebookapplication.data.datasource.db
+package com.tta.phonebookapplication.domain.datasource.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.tta.phonebookapplication.utils.TABLE_NAME
-import com.tta.phonebookapplication.data.datasource.dao.ContactDao
-import com.tta.phonebookapplication.data.model.Contact
+import com.tta.phonebookapplication.domain.datasource.dao.ContactDao
+import com.tta.phonebookapplication.domain.entity.ContactEntity
 
 @Database(
-    entities = [Contact::class],
+    entities = [ContactEntity::class],
     version = 1,
     exportSchema = true
 )

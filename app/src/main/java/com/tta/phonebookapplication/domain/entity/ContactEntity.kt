@@ -1,4 +1,4 @@
-package com.tta.phonebookapplication.data.model
+package com.tta.phonebookapplication.domain.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -10,7 +10,7 @@ import com.tta.phonebookapplication.utils.COLUMN_PHONE
 import com.tta.phonebookapplication.utils.TABLE_NAME
 
 @Entity(tableName = TABLE_NAME)
-data class Contact(
+data class ContactEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = COLUMN_ID)
     val id: Int?,

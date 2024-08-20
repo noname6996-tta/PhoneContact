@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.tta.phonebookapplication.R
-import com.tta.phonebookapplication.data.model.Contact
+import com.tta.phonebookapplication.domain.entity.ContactEntity
 import com.tta.phonebookapplication.databinding.LayoutItemContactBinding
 
 class ContactAdapter :
     RecyclerView.Adapter<ContactAdapter.ItemContactViewHolder>() {
-    private var listContact: List<Contact> = listOf()
+    private var listContactEntity: List<ContactEntity> = listOf()
     private lateinit var context: Context
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setListContact(listContact: List<Contact>, context: Context) {
-        this.listContact = listContact
+    fun setListContact(listContactEntity: List<ContactEntity>, context: Context) {
+        this.listContactEntity = listContactEntity
         this.context = context
         notifyDataSetChanged()
     }
@@ -37,7 +37,7 @@ class ContactAdapter :
     }
 
     override fun onBindViewHolder(holder: ItemContactViewHolder, position: Int) {
-        val data = listContact[position]
+        val data = listContactEntity[position]
 
         holder.binding.tvName.text = data.name
         holder.binding.tvPhone.text = "Phone: ${data.phone}"
@@ -67,7 +67,7 @@ class ContactAdapter :
     }
 
     override fun getItemCount(): Int {
-        return listContact.size
+        return listContactEntity.size
     }
 
     class ItemContactViewHolder(

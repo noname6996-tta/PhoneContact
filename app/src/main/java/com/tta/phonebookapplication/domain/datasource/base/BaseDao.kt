@@ -1,4 +1,4 @@
-package com.tta.phonebookapplication.data.datasource.base
+package com.tta.phonebookapplication.domain.datasource.base
 
 import androidx.room.Dao
 import androidx.room.Delete
