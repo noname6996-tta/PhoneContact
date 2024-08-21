@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -23,6 +24,7 @@ import com.tta.phonebookapplication.ui.screens.base.BaseFragment
 import com.tta.phonebookapplication.ui.screens.fragment.add.AddListFragment
 import com.tta.phonebookapplication.utils.State
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.io.InputStreamReader
 
 @AndroidEntryPoint
@@ -124,7 +126,8 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding>() {
 
             is State.Failure -> {
                 finishLoading()
-                Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Error ${result.throwable.message}", Toast.LENGTH_LONG).show()
+                Log.e("yyyyy",result.throwable.message.toString() )
             }
         }
     }
@@ -155,7 +158,7 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding>() {
                 }
 
                 R.id.import_system -> {
-                    openJsonFilePicker()
+                    viewModel.getListContacts()
                     true
                 }
 

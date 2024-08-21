@@ -33,7 +33,7 @@ object DatabaseModule {
     fun provideRepository(
         dao: ContactDao,
         apiClient: ApiClient
-    ) : ContactRepository {
-        return ContactRepositoryImpl(dao)
+    ): ContactRepository {
+        return ContactRepositoryImpl(apiClient, dao)
     }
 }

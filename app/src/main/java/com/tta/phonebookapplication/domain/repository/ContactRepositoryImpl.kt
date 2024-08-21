@@ -13,7 +13,7 @@ class ContactRepositoryImpl @Inject constructor(
     override suspend fun getAllList(): List<ContactEntity> {
         val response = dao.getAllContacts()
         return response.ifEmpty {
-            apiClient.fetchContactList().body()?.data?.asEntity() ?: response
+            apiClient.fetchContactList().body()?.asEntity() ?: response
         }
     }
 

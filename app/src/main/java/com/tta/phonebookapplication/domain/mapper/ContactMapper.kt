@@ -20,7 +20,6 @@ object ContactMapper : EntityMapper<List<ContactResponse>, List<ContactEntity>> 
         // from database to api
         return entity.map { contact ->
             ContactResponse(
-                id = contact.id ?: 0,
                 name = contact.name,
                 email = contact.email,
                 phone = contact.phone
