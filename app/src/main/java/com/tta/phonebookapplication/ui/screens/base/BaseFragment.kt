@@ -72,13 +72,22 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
     fun startLoading() {
         if (isLoading.not()) {
             isLoading = true
-            loadingDialog.show(childFragmentManager, LoadingDialogFragment::class.java.simpleName)
+            val fragmentManager = parentFragmentManager
+        val loadingFragment = fragmentManager.findFragmentByTag("LoadingDialogFragment") as? LoadingDialogFragment
+
+        if (loadingFragment == null || !loadingFragment.isAdded) {
+            LoadingDialogFragment().show(fragmentManager, "LoadingDialogFragment")
+        }
         }
     }
 
     fun finishLoading() {
         if (isLoading) {
-            loadingDialog.dismiss()
+            val loadingFragment = parentFragmentManager.findFragmentByTag("LoadingDialogFragment") as? LoadingDialogFragment
+
+        if (loadingFragment != null && loadingFragment.isAdded) {
+            loadingFragment.dismiss()
+        }
             isLoading = false
         }
     }
